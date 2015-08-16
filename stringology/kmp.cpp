@@ -24,7 +24,7 @@ vector<int> match(string A, string B)
 	int lenA = A.length(), lenB = B.length();
 	int cur = -1;
 	vector<int> pos;
-	vector<int> fail = build_fail_function(A);
+	vector<int> fail = build_fail_function(B);
 	for (int i = 0; i < lenA; i++) {
 		while (cur != -1 && B[cur+1] != A[i]) {
 			cur = fail[cur];
