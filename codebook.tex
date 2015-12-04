@@ -423,8 +423,10 @@ void dfs2(int x, int c) //use the reverse adj list to dfs
 		if (!vst[rev[x][i]])
 			dfs2(rev[x][i], c);
 }
-
-void find_ssc(int n)
+\end{lstlisting}
+\columnbreak
+\begin{lstlisting}
+void find_scc(int n)
 {
 		memset(vst, false, sizeof(vst));
 		for (int i = 1; i <= n; i++)// first dfs
