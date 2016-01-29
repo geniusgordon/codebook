@@ -35,7 +35,7 @@ void dfs2(int x, int c) //use the reverse adj list to dfs
 			dfs2(rev[x][i], c);
 }
 
-void find_ssc(int n)
+void find_scc(int n)
 {
 		memset(vst, false, sizeof(vst));
 		for (int i = 1; i <= n; i++)// first dfs

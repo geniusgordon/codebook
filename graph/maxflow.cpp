@@ -14,7 +14,7 @@ int enterNode, exitNode, edgeNum, timeStamp;
 bool find_path()
 {
 	queue<int> q;
-	q.push(1);
+	q.push(enterNode);
 	bool ok = false;
 	while (!q.empty()) {
 		int currNode = q.front(); q.pop();

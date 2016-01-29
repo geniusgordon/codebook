@@ -385,6 +385,134 @@ struct Trie {
 	}
 };
 \end{lstlisting}
+\newpage
+\begin{lstlisting}
+#include <iostream>
+#include <cstdio>
+#include <cstring>
+#include <vector>
+#include <queue>
+#include <stack>
+#define N 2000
+using namespace std;
+
+vector <int> adj[N]; //adj list
+vector <int> rev[N]; //adj list reverse
+vector <int> finish;  //the order of leaving 1st dfs
+vector <int> scc[N];
+int group[N];
+bool vst[N];
+
+void dfs1(int x) //first dfs to get the order of leaving dfs
+{
+	vst[x] = true;
+	for (int i = 0; i < adj[x].size(); i++)
+		if (!vst[adj[x][i]])
+			dfs1(adj[x][i]);
+			
+	finish.push_back(x);
+}
+
+void dfs2(int x, int c) //use the reverse adj list to dfs
+{
+	scc[c].push_back(x);
+	group[x] = c;
+	
+	vst[x] = true;
+	for (int i = 0; i < rev[x].size(); i++)
+		if (!vst[rev[x][i]])
+			dfs2(rev[x][i], c);
+}
+\end{lstlisting}
+\columnbreak
+\begin{lstlisting}
+void find_scc(int n)
+{
+		memset(vst, false, sizeof(vst));
+		for (int i = 1; i <= n; i++)// first dfs
+			if (!vst[i])
+				dfs1(i);
+
+		int c = 0;
+		memset(vst, false, sizeof(vst));
+		for (int i = finish.size()-1; i >= 0; i--) //second dfs using the order of finish from the end
+			if (!vst[finish[i]])
+				dfs2(finish[i], c++);
+}
+\end{lstlisting}
+\newpage
+\begin{lstlisting}
+#include <iostream>
+#include <cstdio>
+#include <cstring>
+#include <queue>
+#include <algorithm>
+#define N 300
+using namespace std;
+
+long long adj[N][N];
+int pre[N];
+long long vst[N];
+int enterNode, exitNode, edgeNum, timeStamp;
+
+bool find_path()
+{
+	queue<int> q;
+	q.push(enterNode);
+	bool ok = false;
+	while (!q.empty()) {
+		int currNode = q.front(); q.pop();
+		if (currNode == exitNode) {
+			ok = true;
+			break;
+		}
+		for (int i = 0; i < N; i++) {
+			if (adj[currNode][i] && vst[i] < timeStamp) {
+				vst[i] = timeStamp;
+				q.push(i);
+				pre[i] = currNode;
+			}
+		}
+	}
+	timeStamp++;
+	return ok;
+}
+\end{lstlisting}
+\columnbreak
+\begin{lstlisting}
+long long find_min()
+{
+	int currNode = pre[exitNode];
+	long long ret = adj[pre[exitNode]][exitNode];
+	while (currNode != enterNode) {
+		ret = min(ret, adj[pre[currNode]][currNode]);
+		currNode = pre[currNode];
+	}
+	return ret;
+}
+
+void flow(long long x)
+{
+	int currNode = exitNode;
+	while (currNode != enterNode) {
+		adj[pre[currNode]][currNode] -= x;
+		adj[currNode][pre[currNode]] += x;
+		currNode = pre[currNode];
+	}
+}
+
+long long find_maxflow()
+{
+	long long ans = 0;
+	timeStamp = 1;
+	while (find_path()) {
+		long long minEdge = find_min();
+		flow(minEdge);
+		ans += minEdge;
+	}
+	return ans;
+}
+\end{lstlisting}
 \end{multicols}
  
 \end{document}
